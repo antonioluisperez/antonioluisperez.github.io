@@ -968,6 +968,8 @@
     z-index: 1;
     width: var(--chispa);
     height: auto;
+    /* Cuerpo relleno de papel: los puntos y la línea no se ven a través */
+    background: radial-gradient(ellipse 30% 30% at 50% 60%, var(--bg) 98%, transparent);
     pointer-events: none;
     will-change: transform;
     opacity: 0;
@@ -1081,6 +1083,16 @@
 }
 
 @media (max-width: 760px) {
+    /* Cabe entre el margen y los textos sin pisar ninguno. A este tamaño el
+       trazo se queda fino, así que se engorda con una sombra de su color */
+    .path {
+        --chispa: 48px;
+    }
+
+    .path__chispa {
+        filter: drop-shadow(0 0 0.5px var(--marca)) drop-shadow(0 0 0.3px var(--marca));
+    }
+
     .path__list {
         grid-template-columns: 1fr;
         grid-template-rows: none;

@@ -288,6 +288,7 @@
         let largo = 0;
         let hitos = [];
         let enColumna = false;
+        let columnaX = 0;
 
         caja.classList.add('is-js');
 
@@ -319,6 +320,7 @@
             });
             const vertical = Math.abs(pts[1][0] - pts[0][0]) < 20;
             enColumna = vertical;
+            columnaX = pts[0][0];
             const ini = vertical ? [pts[0][0], pts[0][1] - 36] : [pts[0][0] - 70, pts[0][1] + 40];
             const ult = pts[pts.length - 1];
             const fin = vertical ? [ult[0], ult[1] + 56] : [Math.min(r.width - 8, ult[0] + 90), ult[1] - 34];
@@ -371,10 +373,18 @@
             const paso = largo * p / 16;
             const balanceo = fin || reducido ? 0 : Math.sin(paso) * 7;
             const bote = fin || reducido ? 0 : Math.abs(Math.sin(paso)) * 4;
-            // Al llegar, celebra justo después de la punta de la flecha (debajo,
-            // en móvil) para que la flecha la señale y no la atraviese
-            const x = fin ? (enColumna ? pt.x - ancho / 2 : pt.x + 4) : pt.x - ancho / 2;
-            const y = fin ? (enColumna ? pt.y + 6 : pt.y - ancho * 0.8) : pt.y - ancho + 8 - bote;
+            // En escritorio camina sobre la línea y al llegar celebra justo
+            // después de la punta de la flecha. En móvil la línea baja, así que
+            // va siempre debajo de la punta, en la columna de los puntos, y la
+            // tinta sale de ella sin atravesarla ni acercarla a los textos
+            let x, y;
+            if (enColumna) {
+                x = columnaX - ancho / 2;
+                y = pt.y + (fin ? 6 : 4 - bote);
+            } else {
+                x = fin ? pt.x + 4 : pt.x - ancho / 2;
+                y = fin ? pt.y - ancho * 0.8 : pt.y - ancho + 8 - bote;
+            }
             chispa.style.transform = `translate(${x}px, ${y}px) rotate(${balanceo}deg) scaleX(${fin ? 1 : mirando})`;
             const src = fin ? CELEBRA : ANDA;
             if (chispa.getAttribute('src') !== src) chispa.setAttribute('src', src);
